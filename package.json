@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node -r dotenv/config ./db/seed.js",
+    "seed": "tsx db/seed.ts",
     "migrate": "tsx db/migrate.ts",
-    "drizzle:generate": "drizzle-kit generate:pg"
+    "drizzle:generate": "drizzle-kit generate:pg",
+    "drizzle:drop": "drizzle-kit drop"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
