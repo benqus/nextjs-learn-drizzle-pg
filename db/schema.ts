@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, text, date, integer } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -22,6 +22,12 @@ export const invoices = pgTable("invoices", {
   status: varchar("status", { length: 255 }).notNull(),
   date: date("date").notNull(),
 });
+export const invoiceRelations = relations(invoices, ({ one }) => ({
+  customer: one(customers, {
+    fields:[invoices.customer_id],
+    references:[customers.id],
+  }),
+}));
 
 export const revenue = pgTable("revenue", {
   month: varchar("month", { length: 4 }).notNull().unique(),
