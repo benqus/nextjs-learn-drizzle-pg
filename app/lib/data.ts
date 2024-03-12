@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { asc, desc, sql } from "drizzle-orm";
 import { unstable_noStore as noStore } from "next/cache";
 import { client, db, schema } from "@/db";
 import {
@@ -171,48 +171,43 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-// export async function fetchInvoiceById(id: string) {
-//   try {
-//     const data = await sql<InvoiceForm>`
-//       SELECT
-//         invoices.id,
-//         invoices.customer_id,
-//         invoices.amount,
-//         invoices.status
-//       FROM invoices
-//       WHERE invoices.id = ${id};
-//     `;
+export async function fetchCustomers() {
+  try {
+    return await db.query.customers.findMany({
+      columns: {
+        id: true,
+        name: true,
+      },
+      orderBy: [asc(schema.customers.name)]
+    });
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all customers.");
+  }
+}
 
-//     const invoice = data.rows.map((invoice: Invoice) => ({
-//       ...invoice,
-//       // Convert amount from cents to dollars
-//       amount: invoice.amount / 100,
-//     }));
+export async function fetchInvoiceById(id: string) {
+  try {
+    const invoice = await db.query.invoices.findFirst({
+      columns: {
+        id: true,
+        customer_id: true,
+        amount: true,
+        status: true,
+      },
+      where: (invoices, { eq }) => eq(invoices.id, id),
+    });
 
-//     return invoice[0];
-//   } catch (error) {
-//     console.error("Database Error:", error);
-//     throw new Error("Failed to fetch invoice.");
-//   }
-// }
+    if (invoice) {
+      invoice.amount /= 100;
+    }
 
-// export async function fetchCustomers() {
-//   try {
-//     const data = await sql<CustomerField>`
-//       SELECT
-//         id,
-//         name
-//       FROM customers
-//       ORDER BY name ASC
-//     `;
-
-//     const customers = data.rows;
-//     return customers;
-//   } catch (err) {
-//     console.error("Database Error:", err);
-//     throw new Error("Failed to fetch all customers.");
-//   }
-// }
+    return invoice;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch invoice.");
+  }
+}
 
 // export async function fetchFilteredCustomers(query: string) {
 //   try {
@@ -247,12 +242,13 @@ export async function fetchInvoicesPages(query: string) {
 //   }
 // }
 
-// export async function getUser(email: string) {
-//   try {
-//     const user = await sql`SELECT * FROM users WHERE email=${email}`;
-//     return user.rows[0] as User;
-//   } catch (error) {
-//     console.error("Failed to fetch user:", error);
-//     throw new Error("Failed to fetch user.");
-//   }
-// }
+export async function getUser(email: string) {
+  try {
+    return await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, email),
+    });
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
+  }
+}

@@ -1,5 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE IF NOT EXISTS "customers" (
 	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 	"name" varchar(255) NOT NULL,
@@ -13,8 +11,7 @@ CREATE TABLE IF NOT EXISTS "invoices" (
 	"customer_id" uuid NOT NULL,
 	"amount" integer NOT NULL,
 	"status" varchar(255) NOT NULL,
-	"date" date NOT NULL,
-	CONSTRAINT "invoices_customer_id_unique" UNIQUE("customer_id")
+	"date" date NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "revenue" (

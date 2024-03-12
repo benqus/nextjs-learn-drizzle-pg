@@ -39,7 +39,7 @@ async function seedInvoices(client: Client): Promise<void> {
           `('${customer_id}', ${amount}, '${status}', '${date}')`
         )
         .join(',')
-      } ON CONFLICT (customer_id) DO NOTHING;
+      } ON CONFLICT (id) DO NOTHING;
     `;
     const { rows } = await client.query({ text });
 

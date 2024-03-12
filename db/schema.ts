@@ -17,7 +17,7 @@ export const customers = pgTable("customers", {
 
 export const invoices = pgTable("invoices", {
   id: uuid("id").primaryKey().default(sql`uuid_generate_v4()`),
-  customer_id: uuid("customer_id").notNull().unique(),
+  customer_id: uuid("customer_id").notNull(),
   amount: integer("amount").notNull(),
   status: varchar("status", { length: 255 }).notNull(),
   date: date("date").notNull(),

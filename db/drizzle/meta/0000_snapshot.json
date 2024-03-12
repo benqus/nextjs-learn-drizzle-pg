@@ -1,5 +1,5 @@
 {
-  "id": "39e22423-fec5-4535-aaaa-d8799e6b82c9",
+  "id": "2858c262-fe3c-40a1-aa60-d94fa32eabc7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -86,15 +86,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "invoices_customer_id_unique": {
-          "name": "invoices_customer_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "customer_id"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "revenue": {
       "name": "revenue",
