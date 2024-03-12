@@ -1,7 +1,7 @@
 'use server';
  
-import { db } from '@/db';
-import { sql } from 'drizzle-orm';
+import { db, schema } from '@/db';
+import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -15,7 +15,8 @@ const FormSchema = z.object({
 });
  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
- 
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+
 export async function createInvoice(formData: FormData) {
   const { customerId, amount, status } = CreateInvoice.parse({
     customerId: formData.get('customerId'),
@@ -32,4 +33,28 @@ export async function createInvoice(formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+}
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const { customerId, amount, status } = UpdateInvoice.parse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+ 
+  await db.update(schema.invoices)
+    .set({
+      customer_id: customerId,
+      amount: amount * 100,
+      status: status,
+    })
+    .where(eq(schema.invoices.id, id));
+
+  revalidatePath('/dashboard/invoices');
+  redirect('/dashboard/invoices');
+}
+
+export async function deleteInvoice(id: string) {
+  await db.delete(schema.invoices).where(eq(schema.invoices.id, id));
+  revalidatePath('/dashboard/invoices');
 }
