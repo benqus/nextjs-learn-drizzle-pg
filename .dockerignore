@@ -1,0 +1,11 @@
+# src/__tests__/
+# **/*.test.ts
+
+.dockerignore
+
+.next
+next-env.d.ts
+
+node_modules
+
+**/*.md
